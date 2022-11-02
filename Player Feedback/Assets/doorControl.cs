@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class doorControl : MonoBehaviour
 {
-    float timeStamp;
+    float timeStamp, doorStamp;
 
     [SerializeField]
     ParticleSystem particles;
+
+    AudioSource doorNoise, sparkNoise;
     // Start is called before the first frame update
     void Start()
     {
+        doorStamp = Time.time;
         timeStamp = Time.time;
+        sparkNoise = particles.GetComponent<AudioSource>();
+        doorNoise = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -21,6 +26,17 @@ public class doorControl : MonoBehaviour
         {
             particles.Play();
             timeStamp = Time.time;
+            sparkNoise.Play();
+            if(Time.time > timeStamp + 0.25)
+            {
+                sparkNoise.Stop();
+            }
         }
+        if(Time.time > doorStamp + 1.75)
+        {
+            doorNoise.Play();
+            doorStamp = Time.time;
+        }
+
     }
 }

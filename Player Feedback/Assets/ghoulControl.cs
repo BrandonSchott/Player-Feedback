@@ -7,11 +7,14 @@ public class ghoulControl : MonoBehaviour
     [SerializeField]
     GameObject player;
 
+    AudioSource scream;
+
     bool playerFound = false;
     // Start is called before the first frame update
     void Start()
     {
         gameObject.SetActive(false);
+        scream = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -24,16 +27,12 @@ public class ghoulControl : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void PlayerLooking()
     {
-        if(other.transform.tag == "Player")
+        playerFound = true;
+        if (!scream.isPlaying)
         {
-            PlayerControl player = other.GetComponent<PlayerControl>();
-            if(player.lookingAtMonster)
-            {
-                playerFound = true;
-            }
-            
+            scream.Play();
         }
     }
 }

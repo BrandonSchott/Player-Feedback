@@ -10,19 +10,18 @@ public class PlayerControl : MonoBehaviour
     float mouseX, mouseY, movementSpeed;
 
     [SerializeField]
-    GameObject cameraX, cameraY, black;
+    GameObject cameraX, cameraY, black, ghost, pauseMenu;
 
     RaycastHit hit;
 
     bool scared = false;
-    public bool lookingAtMonster;
     float timeStamp;
     // Start is called before the first frame update
     void Start()
     {
         movementSpeed = 3.0f;
         black.SetActive(false);
-        lookingAtMonster = false;
+        pauseMenu.SetActive(false);
     }
 
     // Update is called once per frame
@@ -40,12 +39,18 @@ public class PlayerControl : MonoBehaviour
 
         cameraY.transform.Rotate(Vector3.left * mouseY * 200 * Time.deltaTime);
 
-        if(Physics.Raycast(transform.position, transform.forward, out hit, 10.0f))
+        if(Physics.Raycast(transform.position, transform.forward, out hit, 20.0f))
         {
             if(hit.transform.tag == "Ghost")
             {
-                lookingAtMonster=true;
+                ghost.BroadcastMessage("PlayerLooking");
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            pauseMenu.SetActive(true);
+            Time.timeScale = 0;
         }
 
         if(scared)
@@ -64,6 +69,13 @@ public class PlayerControl : MonoBehaviour
             scared = false;
             timeStamp = Time.time;
             black.SetActive(true);
+            Application.Quit();
         }
+    }
+
+    public void ResumeGame()
+    {
+        pauseMenu.SetActive(false);
+        Time.timeScale = 1;
     }
 }
